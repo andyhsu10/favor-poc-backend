@@ -7,13 +7,13 @@ from bs4 import BeautifulSoup
 
 logging.basicConfig(
     format='%(asctime)s %(levelname)s:%(message)s',
-    level=logging.INFO)
+    level=logging.INFO,
+)
 
 class Crawler:
 
-    def __init__(self, urls=[]):
-        self.visited_urls = []
-        self.urls_to_visit = urls
+    def __init__(self, url=None):
+        self.url_to_visit = url
 
     def download_context(self, url):
         return requests.get(url).text
@@ -29,26 +29,25 @@ class Crawler:
                 result.append([cell.text.strip() for cell in cells])
         return result
 
-    def add_url_to_visit(self, url):
-        if url not in self.visited_urls and url not in self.urls_to_visit:
-            self.urls_to_visit.append(url)
-
     def crawl(self, url):
         html = self.download_context(url)
         contents = self.get_wanted_information(html)
-        for content in contents:
-            print(content)
+        results = [{
+            'id': content[0],
+            'student': content[1],
+            'city': content[2],
+            'location': content[3],
+            'subject': content[4],
+            'time': content[5],
+        } for index, content in enumerate(contents) if index != 0]
+        return results
 
     def run(self):
-        while self.urls_to_visit:
-            url = self.urls_to_visit.pop(0)
-            logging.info(f'Crawling: {url}')
-            try:
-                self.crawl(url)
-            except Exception:
-                logging.exception(f'Failed to crawl: {url}')
-            finally:
-                self.visited_urls.append(url)
-
-if __name__ == '__main__':
-    Crawler(urls=['https://www.teaching.com.tw/member/case-list.php']).run()
+        url = self.url_to_visit
+        logging.info(f'Crawling: {url}')
+        try:
+            results = self.crawl(url)
+            return results
+        except Exception:
+            logging.exception(f'Failed to crawl: {url}')
+            return []
