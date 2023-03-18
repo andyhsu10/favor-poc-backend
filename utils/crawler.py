@@ -35,8 +35,9 @@ class Crawler:
 
     def crawl(self, url):
         html = self.download_context(url)
-        content = self.get_wanted_information(html)
-        print(content, len(content))
+        contents = self.get_wanted_information(html)
+        for content in contents:
+            print(content)
 
     def run(self):
         while self.urls_to_visit:
