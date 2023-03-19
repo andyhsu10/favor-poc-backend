@@ -42,9 +42,10 @@ def get_tutor_matchings():
     matching_str = get_matching_result(tutors, description)
     matching_ids = [word.strip() for word in matching_str.split("\n")]
     results = [result for result in tutor_results if result["id"] in matching_ids]
+    print(len(tutors), len(results))
     return jsonify({
-            "data": results
-        })
+        "data": results
+    })
 
 if __name__ == "__main__":
     app.run(host="localhost", port=8080)

@@ -21,7 +21,6 @@ def get_matching_result(tutors: list, description: str):
 
     ===配對結果===
     """
-    print(prompt)
 
     response = openai.Completion.create(
         model="text-davinci-003",
